@@ -12,10 +12,43 @@ A minimalist JavaFX desktop application for sharing files over your local networ
 - 🎨 **Minimalist Design** - Clean, modern interface
 - 🌓 **Dark/Light Theme** - Toggle between themes instantly
 - 📱 **QR Code Connection** - Scan to connect from mobile
-- 🚀 **Fast File Sharing** - Direct HTTP file server
+- 🔒 **HTTPS Support** - Encrypted connections with self-signed certificates
+- 🚀 **Fast File Sharing** - Direct HTTP/HTTPS file server
 - 📂 **Folder Navigation** - Browse directories easily
-- 🔒 **Local Network** - Secure, no internet required
+- 🔐 **Secure Transfer** - TLS 1.2+ encryption for sensitive files
 - 💻 **Cross-Platform** - Works on Windows, macOS, Linux
+- 🌐 **Network Verification** - Auto-detects and validates network
+- 📊 **Real-time Statistics** - Track requests, downloads, connections
+- ⏱️ **Auto-Shutdown** - Configurable inactivity timeout (5 min)
+- 🔌 **Dynamic Ports** - Auto-finds available ports (8443/8080+)
+- 📋 **Copy URL** - One-click clipboard copy
+- 🔗 **GitHub Integration** - Quick access to project page
+
+## 🔒 Security
+
+### HTTPS Mode (Default)
+- **TLS 1.2+ Encryption** - All data encrypted in transit
+- **Self-Signed Certificates** - Auto-generated on server start
+- **2048-bit RSA** - Industry-standard encryption
+- **Privacy Protection** - Files not visible on network
+
+### Important Notes
+⚠️ **Self-signed certificates** will show browser warnings on mobile devices. This is normal and expected for local HTTPS servers.
+
+**To connect:**
+1. Scan QR code
+2. Click "Advanced" → "Proceed" in browser warning
+3. Browse files securely
+
+**When to use HTTPS:**
+- ✅ Sharing sensitive documents
+- ✅ On public/shared Wi-Fi
+- ✅ Privacy is important
+
+**When HTTP is fine:**
+- ✅ Sharing public files
+- ✅ Trusted home network only
+- ✅ Maximum transfer speed needed
 
 ## 🖼️ Screenshots
 
@@ -111,7 +144,7 @@ Modify CSS files in `src/main/resources/css/`:
 desktop-file-share/
 ├── src/
 │   ├── main/
-│   │   ├── java/com/htshare/
+│   │   ├── java/com/fileshare/
 │   │   │   ├── MainApp.java              # Entry point
 │   │   │   ├── server/
 │   │   │   │   └── FileServer.java        # HTTP server
