@@ -30,6 +30,7 @@
 		<ToggleButton fx:id="themeToggle" text="🌙" styleClass="theme-toggle"
 			onAction="#handleThemeToggle" mnemonicParsing="false" />
 	</HBox>
+    <ScrollPane>                    <!-- Scrollable area -->
 
 	<!-- Main Content -->
 	<VBox VBox.vgrow="ALWAYS" spacing="20" styleClass="content-area">
@@ -200,6 +201,8 @@
 				styleClass="status-info" />
 		</HBox>
 	</VBox>
+	    </ScrollPane>
+
 
 	<!-- Footer -->
 	<HBox styleClass="footer" alignment="CENTER" spacing="15">

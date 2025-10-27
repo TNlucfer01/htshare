@@ -1,7 +1,7 @@
 package com.htshare.ui;
 
 import com.htshare.server.ConnectionMonitor;
-// import com.htshare.server.HttpFileServer;
+import com.htshare.server.HttpFileServer;
 import com.htshare.server.HttpsFileServer;
 import com.htshare.util.NetworkUtils;
 import com.htshare.util.NetworkVerifier;
@@ -30,75 +30,54 @@ public class MainController {
   private static final int AUTO_SHUTDOWN_MINUTES = 5;
   private static final String GITHUB_URL = "https://github.com/TNLucfer01";
 
-  @FXML
-  private VBox rootContainer;
-  @FXML
-  private Label networkStatusLabel;
-  @FXML
-  private Button refreshNetworkButton;
-  @FXML
-  private Label folderPathLabel;
-  @FXML
-  private Button selectFolderButton;
-  @FXML
-  private Button startServerButton;
-  @FXML
-  private Button stopServerButton;
-  @FXML
-  private CheckBox autoShutdownCheck;
-  @FXML
-  private CheckBox httpsCheck;
-  @FXML
-  private ImageView qrCodeImageView;
-  @FXML
-  private HBox urlContainer;
-  @FXML
-  private Label serverUrlLabel;
-  @FXML
-  private Button copyUrlButton;
-  @FXML
-  private Label portInfoLabel;
-  @FXML
-  private Label statusLabel;
-  @FXML
-  private ToggleButton themeToggle;
-  @FXML
-  private ProgressIndicator serverProgress;
-  @FXML
-  private Hyperlink githubLink;
+
+
+  @FXML private ScrollPane scrollPane;
+
+
+  @FXML private VBox rootContainer;
+  @FXML private Label networkStatusLabel;
+  @FXML private Button refreshNetworkButton;
+  @FXML private Label folderPathLabel;
+  @FXML private Button selectFolderButton;
+  @FXML private Button startServerButton;
+  @FXML private Button stopServerButton;
+  @FXML private CheckBox autoShutdownCheck;
+  @FXML private CheckBox httpsCheck;
+  @FXML private ImageView qrCodeImageView;
+  @FXML private HBox urlContainer;
+  @FXML private Label serverUrlLabel;
+  @FXML private Button copyUrlButton;
+  @FXML private Label portInfoLabel;
+  @FXML private Label statusLabel;
+  @FXML private ToggleButton themeToggle;
+  @FXML private ProgressIndicator serverProgress;
+  @FXML private Hyperlink githubLink;
 
   // Statistics
-  @FXML
-  private HBox statsSection;
-  @FXML
-  private Label requestsLabel;
-  @FXML
-  private Label downloadsLabel;
-  @FXML
-  private Label activeConnectionsLabel;
-  @FXML
-  private Label timeRemainingLabel;
+  @FXML private HBox statsSection;
+  @FXML private Label requestsLabel;
+  @FXML private Label downloadsLabel;
+  @FXML private Label activeConnectionsLabel;
+  @FXML private Label timeRemainingLabel;
 
   private Stage stage;
   private File selectedFolder;
   private HttpsFileServer fileServer;
-  private boolean isDarkTheme = false;
+  private HttpFileServer fileServer2;
+  private boolean isDarkTheme = true;
   private int currentPort;
   private Timer statsUpdateTimer;
   private NetworkVerifier.NetworkInfo currentNetwork;
   private boolean useHttps = true;
+
 
   @FXML
   public void initialize() {
     stopServerButton.setDisable(true);
     serverProgress.setVisible(false);
     qrCodeImageView.setVisible(false);
-    ScrollPane scrollPane = new ScrollPane(rootContainer);
-    scrollPane.setFitToWidth(true);
 
-    // Then replace the scene root (assuming you're setting the scene in code)
-    Stage stage = (Stage) rootContainer.getScene().getWindow();
-    stage.getScene().setRoot(scrollPane); 
     if (urlContainer != null) {
       urlContainer.setVisible(false);
     }
@@ -134,31 +113,32 @@ public class MainController {
 
   private void checkNetwork() {
     new Thread(
-        () -> {
-          NetworkVerifier.NetworkValidationResult result = NetworkVerifier.validateNetwork();
+            () -> {
+              NetworkVerifier.NetworkValidationResult result = NetworkVerifier.validateNetwork();
 
-          Platform.runLater(
-              () -> {
-                if (result.isValid()) {
-                  currentNetwork = result.getNetworkInfo();
-                  String networkType = NetworkVerifier.getNetworkType(currentNetwork);
-                  String message = String.format(
-                      "✓ Connected to %s: %s",
-                      networkType, currentNetwork.getAddress().getHostAddress());
-                  networkStatusLabel.setText(message);
-                  networkStatusLabel.getStyleClass().removeAll("network-error");
-                  networkStatusLabel.getStyleClass().add("network-success");
+              Platform.runLater(
+                  () -> {
+                    if (result.isValid()) {
+                      currentNetwork = result.getNetworkInfo();
+                      String networkType = NetworkVerifier.getNetworkType(currentNetwork);
+                      String message =
+                          String.format(
+                              "✓ Connected to %s: %s",
+                              networkType, currentNetwork.getAddress().getHostAddress());
+                      networkStatusLabel.setText(message);
+                      networkStatusLabel.getStyleClass().removeAll("network-error");
+                      networkStatusLabel.getStyleClass().add("network-success");
 
-                  logger.info("Network validated: {}", currentNetwork);
-                } else {
-                  networkStatusLabel.setText("⚠ " + result.getMessage());
-                  networkStatusLabel.getStyleClass().removeAll("network-success");
-                  networkStatusLabel.getStyleClass().add("network-error");
+                      logger.info("Network validated: {}", currentNetwork);
+                    } else {
+                      networkStatusLabel.setText("⚠" + result.getMessage());
+                      networkStatusLabel.getStyleClass().removeAll("network-success");
+                      networkStatusLabel.getStyleClass().add("network-error");
 
-                  logger.warn("Network validation failed: {}", result.getMessage());
-                }
-              });
-        })
+                      logger.warn("Network validation failed: {}", result.getMessage());
+                    }
+                  });
+            })
         .start();
   }
 
@@ -209,79 +189,81 @@ public class MainController {
 
       // Start server in background thread
       new Thread(
-          () -> {
-            try {
-              // Create server with optional timeout
-              int timeout = autoShutdown ? AUTO_SHUTDOWN_MINUTES : 0;
+              () -> {
+                try {
+                  // Create server with optional timeout
+                  int timeout = autoShutdown ? AUTO_SHUTDOWN_MINUTES : 0;
 
-              fileServer = new HttpsFileServer(
-                  PREFERRED_PORT_HTTPS, selectedFolder);
-              fileServer.start();
+                  fileServer =
+                      new HttpsFileServer(
+                          PREFERRED_PORT_HTTPS, selectedFolder,timeout,null,useHttps);
+                  fileServer.start();
 
-              // Get actual port used
-              currentPort = fileServer.getActualPort();
+                  // Get actual port used
+                  currentPort = fileServer.getActualPort();
 
-              String localIP = NetworkUtils.getLocalIPAddress();
-              String serverUrl = "http://" + localIP + ":" + currentPort;
+                  String localIP = NetworkUtils.getLocalIPAddress();
+                  String serverUrl = "http://" + localIP + ":" + currentPort;
 
-              Platform.runLater(
-                  () -> {
-                    try {
-                      // Generate QR Code
-                      Image qrImage = QRCodeGenerator.generateQRCode(serverUrl, 300, 300);
-                      qrCodeImageView.setImage(qrImage);
-                      qrCodeImageView.setVisible(true);
+                  Platform.runLater(
+                      () -> {
+                        try {
+                          // Generate QR Code
+                          Image qrImage = QRCodeGenerator.generateQRCode(serverUrl, 300, 300);
+                          qrCodeImageView.setImage(qrImage);
+                          qrCodeImageView.setVisible(true);
 
-                      serverUrlLabel.setText(serverUrl);
-                      if (urlContainer != null) {
-                        urlContainer.setVisible(true);
-                      }
+                          serverUrlLabel.setText(serverUrl);
+                          if (urlContainer != null) {
+                            urlContainer.setVisible(true);
+                          }
 
-                      // Show port info if different from preferred
-                      if (portInfoLabel != null) {
-                        if (currentPort != PREFERRED_PORT_HTTP) {
-                          portInfoLabel.setText(
-                              "ℹ Using port "
-                                  + currentPort
-                                  + " (Port "
-                                  + PREFERRED_PORT_HTTP
-                                  + " was unavailable)");
-                          portInfoLabel.setVisible(true);
-                        } else {
-                          portInfoLabel.setVisible(false);
+                          // Show port info if different from preferred
+                          if (portInfoLabel != null) {
+                            if (currentPort != PREFERRED_PORT_HTTP) {
+                              portInfoLabel.setText(
+                                  "ℹ Using port "
+                                      + currentPort
+                                      + " (Port "
+                                      + PREFERRED_PORT_HTTP
+                                      + " was unavailable)");
+                              portInfoLabel.setVisible(true);
+                            } else {
+                              portInfoLabel.setVisible(false);
+                            }
+                          }
+
+                          // Show statistics section
+                          if (statsSection != null) {
+                            statsSection.setVisible(true);
+                            startStatsUpdater();
+                          }
+
+                          stopServerButton.setDisable(false);
+                          serverProgress.setVisible(false);
+
+                          String statusMsg =
+                              currentPort == PREFERRED_PORT_HTTP
+                                  ? "Server running on " + serverUrl
+                                  : "Server running on " + serverUrl + " (auto-assigned port)";
+
+                          if (autoShutdown) {
+                            statusMsg += " • Auto-shutdown: " + AUTO_SHUTDOWN_MINUTES + " min idle";
+                          }
+
+                          updateStatus(statusMsg, "success");
+
+                          logger.info("Server started successfully on {}", serverUrl);
+
+                        } catch (Exception e) {
+                          handleServerError(e);
                         }
-                      }
+                      });
 
-                      // Show statistics section
-                      if (statsSection != null) {
-                        statsSection.setVisible(true);
-                        startStatsUpdater();
-                      }
-
-                      stopServerButton.setDisable(false);
-                      serverProgress.setVisible(false);
-
-                      String statusMsg = currentPort == PREFERRED_PORT_HTTP
-                          ? "Server running on " + serverUrl
-                          : "Server running on " + serverUrl + " (auto-assigned port)";
-
-                      if (autoShutdown) {
-                        statusMsg += " • Auto-shutdown: " + AUTO_SHUTDOWN_MINUTES + " min idle";
-                      }
-
-                      updateStatus(statusMsg, "success");
-
-                      logger.info("Server started successfully on {}", serverUrl);
-
-                    } catch (Exception e) {
-                      handleServerError(e);
-                    }
-                  });
-
-            } catch (IOException e) {
-              Platform.runLater(() -> handleServerError(e));
-            }
-          })
+                } catch (IOException e) {
+                  Platform.runLater(() -> handleServerError(e));
+                }
+              })
           .start();
 
     } catch (Exception e) {
@@ -428,7 +410,7 @@ public class MainController {
 
     if (isDarkTheme) {
       scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
-      themeToggle.setText("☀");
+      themeToggle.setText("");
     } else {
       scene.getStylesheets().add(getClass().getResource("/css/light-theme.css").toExternalForm());
       themeToggle.setText("🌙");
