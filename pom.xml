@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.htshare</groupId>
-	<artifactId>desktop-file-share</artifactId>
+	<artifactId>htshare</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>Desktop File Share</name>
-	<description>Minimalist file sharing app with QR code support</description>
+	<name>Htshare</name>
+	<description>Minimalist file sharing app between the Computer and the mobile or other computer  with QR code support</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,11 +26,15 @@
 			<artifactId>javafx-controls</artifactId>
 			<version>${javafx.version}</version>
 		</dependency>
+		<!-- 		for the ui andding the fxml 	 -->
+
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
 			<version>${javafx.version}</version>
 		</dependency>
+		<!--  for the rendering i think -->
+
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-graphics</artifactId>
@@ -55,12 +59,13 @@
 			<artifactId>javase</artifactId>
 			<version>3.5.3</version>
 		</dependency>
-<dependency>
-    <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter</artifactId>
-    <version>5.10.2</version>
-    <scope>test</scope>
-</dependency>
+		<!--  what ius the this-->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.10.2</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Logging -->
 		<dependency>
