@@ -39,14 +39,14 @@ public class HttpsFileServer extends NanoHTTPD {
       Runnable onTimeout,
       boolean useHttps)
       throws IOException {
-    super(findAvailablePort(preferredPort,  8080,  8180));
+    super(preferredPort);
 
     if (!rootDirectory.exists() || !rootDirectory.isDirectory()) {
       throw new IOException("Invalid root directory: " + rootDirectory);
     }
 
     this.rootDirectory = rootDirectory;
-    this.actualPort = getListeningPort();
+    this.actualPort = preferredPort; // Store the port we're using
     this.connectionMonitor = new ConnectionMonitor(timeoutMinutes, onTimeout);
     this.useHttps = useHttps;
 
@@ -67,19 +67,7 @@ public class HttpsFileServer extends NanoHTTPD {
 
   /** Find available port in range */
   private static int findAvailablePort(int preferred, int min, int max) throws IOException {
-    preferred = (preferred == -1) ? min : preferred;
-    
-    // First try the preferred port
-    try (ServerSocket socket = new ServerSocket(preferred)) {
-      logger.info("Found available port: {}", preferred);
-      return preferred;
-    } catch (IOException e) {
-      logger.debug("Preferred port {} not available", preferred);
-    }
-    
-    // Try all ports in the range
-    for (int port = min; port <= max; port++) {
-      if (port == preferred) continue; // Skip preferred port as we already tried it
+    for (int port = preferred; port <= max; port++) {
       try (ServerSocket socket = new ServerSocket(port)) {
         logger.info("Found available port: {}", port);
         return port;
@@ -88,7 +76,8 @@ public class HttpsFileServer extends NanoHTTPD {
       }
     }
 
-    throw new IOException("No ports available in range " + min + "-" + max);
+    logger.warn("No port available in range {}-{}, using {}", min, max, preferred);
+    return preferred;
   }
 
   /** Setup SSL/TLS with self-signed certificate */
@@ -538,3 +527,4 @@ public class HttpsFileServer extends NanoHTTPD {
         .replace("\t", "\\t");
   }
 }
+

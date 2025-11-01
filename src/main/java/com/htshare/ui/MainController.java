@@ -30,10 +30,7 @@ public class MainController {
   private static final int AUTO_SHUTDOWN_MINUTES = 5;
   private static final String GITHUB_URL = "https://github.com/TNLucfer01";
 
-
-
   @FXML private ScrollPane scrollPane;
-
 
   @FXML private VBox rootContainer;
   @FXML private Label networkStatusLabel;
@@ -69,8 +66,7 @@ public class MainController {
   private int currentPort;
   private Timer statsUpdateTimer;
   private NetworkVerifier.NetworkInfo currentNetwork;
-  private boolean useHttps = true;
-
+  private boolean useHttps = false;
 
   @FXML
   public void initialize() {
@@ -193,13 +189,13 @@ public class MainController {
                 try {
                   // Create server with optional timeout
                   int timeout = autoShutdown ? AUTO_SHUTDOWN_MINUTES : 0;
-
+                  // creae the a server witht that port no and folder
                   fileServer =
                       new HttpsFileServer(
-                          PREFERRED_PORT_HTTPS, selectedFolder,timeout,null,useHttps);
+                          PREFERRED_PORT_HTTP, selectedFolder, timeout, null, useHttps);
                   fileServer.start();
 
-                  // Get actual port used
+                  // Get actual port used  in the server
                   currentPort = fileServer.getActualPort();
 
                   String localIP = NetworkUtils.getLocalIPAddress();
@@ -220,6 +216,8 @@ public class MainController {
 
                           // Show port info if different from preferred
                           if (portInfoLabel != null) {
+                            // Should be using the same as the port from the server or else the
+                            // error will keep comming
                             if (currentPort != PREFERRED_PORT_HTTP) {
                               portInfoLabel.setText(
                                   "ℹ Using port "
@@ -408,7 +406,7 @@ public class MainController {
     Scene scene = rootContainer.getScene();
     scene.getStylesheets().clear();
 
-    if (isDarkTheme) {
+    if (!isDarkTheme) {
       scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
       themeToggle.setText("");
     } else {
@@ -473,3 +471,4 @@ public class MainController {
     }
   }
 }
+

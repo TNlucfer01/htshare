@@ -26,7 +26,7 @@ public class MainApp extends Application {
       Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
       // Load default theme (light)
-      scene.getStylesheets().add(getClass().getResource("/css/light-theme.css").toExternalForm());
+      scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
 
       primaryStage.setTitle("File Share - Desktop");
       primaryStage.setScene(scene);
