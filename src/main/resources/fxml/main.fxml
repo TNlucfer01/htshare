@@ -18,7 +18,7 @@
 		</padding>
 
 		<VBox HBox.hgrow="ALWAYS" spacing="5">
-			<Label text="📁 File Share" styleClass="app-title">
+			<Label text="📁 HtShare " styleClass="app-title">
 				<font>
 					<Font name="System Bold" size="24" />
 				</font>

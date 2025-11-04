@@ -250,7 +250,7 @@ public class HttpsFileServer extends NanoHTTPD {
     html.append("<!DOCTYPE html><html lang=\"en\"><head>");
     html.append("<meta charset=\"UTF-8\">");
     html.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-    html.append("<title>").append(escapeHtml(directory.getName())).append(" - File Share</title>");
+    html.append("<title>").append(escapeHtml(directory.getName())).append(" - HtShare</title>");
 
     // Add lock icon for HTTPS
     String protocol = useHttps ? "🔒 HTTPS" : "HTTP";

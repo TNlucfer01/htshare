@@ -406,7 +406,7 @@ public class MainController {
     Scene scene = rootContainer.getScene();
     scene.getStylesheets().clear();
 
-    if (!isDarkTheme) {
+    if (isDarkTheme) {
       scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
       themeToggle.setText("");
     } else {

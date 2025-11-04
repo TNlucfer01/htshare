@@ -66,7 +66,7 @@ public class HttpFileServer {
     // Set up request handlers
     this.server.createContext("/", new FileHandler());
     this.server.createContext("/api/list", new ApiListHandler());
-  
+
     // Use thread pool for handling requests
     this.server.setExecutor(Executors.newFixedThreadPool(THREAD_POOL_SIZE));
 
@@ -300,7 +300,7 @@ public class HttpFileServer {
     html.append("<!DOCTYPE html><html lang=\"en\"><head>");
     html.append("<meta charset=\"UTF-8\">");
     html.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-    html.append("<title>").append(escapeHtml(directory.getName())).append(" - File Share</title>");
+    html.append("<title>").append(escapeHtml(directory.getName())).append(" - HtShare</title>");
     html.append("<style>");
     html.append(getEmbeddedCss());
     html.append("</style></head><body>");

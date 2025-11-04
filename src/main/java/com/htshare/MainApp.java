@@ -28,7 +28,7 @@ public class MainApp extends Application {
       // Load default theme (light)
       scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
 
-      primaryStage.setTitle("File Share - Desktop");
+      primaryStage.setTitle("HtShare - Desktop");
       primaryStage.setScene(scene);
       primaryStage.setMinWidth(500);
       primaryStage.setMinHeight(600);
