@@ -78,7 +78,39 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.4.14</version>
 		</dependency>
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-core</artifactId>
+			<version>12.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-javafx</artifactId>
+			<version>12.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-materialdesign2-pack</artifactId>
+			<version>12.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-feather-pack</artifactId>
+			<version>12.3.1</version>
+		</dependency>
+		<!-- Ikonli JavaFX support -->
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-javafx</artifactId>
+			<version>12.3.1</version>
+		</dependency>
 
+		<!-- FontAwesome icon pack -->
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-fontawesome5-pack</artifactId>
+			<version>12.3.1</version>
+		</dependency>
 		<!-- JSON Processing -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -95,6 +127,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.11.0</version>
 				<configuration>
+					<argLine>--add-exports
+						java.base/sun.security.x509=ALL-UNNAMED</argLine>
 					<source>17</source>
 					<target>17</target>
 				</configuration>
@@ -106,6 +140,9 @@
 				<artifactId>javafx-maven-plugin</artifactId>
 				<version>0.0.8</version>
 				<configuration>
+					<additionalArgs>--add-exports
+						java.base/sun.security.x509=ALL-UNNAMED --add-opens
+						java.base/sun.security.x509=ALL-UNNAMED</additionalArgs>
 					<mainClass>com.htshare.MainApp</mainClass>
 				</configuration>
 			</plugin>

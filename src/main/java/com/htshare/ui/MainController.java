@@ -1,7 +1,6 @@
 package com.htshare.ui;
 
 import com.htshare.server.ConnectionMonitor;
-import com.htshare.server.HttpFileServer;
 import com.htshare.server.HttpsFileServer;
 import com.htshare.util.NetworkUtils;
 import com.htshare.util.NetworkVerifier;
@@ -20,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,9 +28,7 @@ public class MainController {
   private static final int PREFERRED_PORT_HTTPS = 8443;
   private static final int PREFERRED_PORT_HTTP = 8080;
   private static final int AUTO_SHUTDOWN_MINUTES = 5;
-  private static final String GITHUB_URL = "https://github.com/TNLucfer01";
-
-  @FXML private ScrollPane scrollPane;
+  private static final String GITHUB_URL = "https://github.com/TNLucifer";
 
   @FXML private VBox rootContainer;
   @FXML private Label networkStatusLabel;
@@ -48,6 +46,7 @@ public class MainController {
   @FXML private Label portInfoLabel;
   @FXML private Label statusLabel;
   @FXML private ToggleButton themeToggle;
+  @FXML private FontIcon themeIcon;
   @FXML private ProgressIndicator serverProgress;
   @FXML private Hyperlink githubLink;
 
@@ -61,12 +60,11 @@ public class MainController {
   private Stage stage;
   private File selectedFolder;
   private HttpsFileServer fileServer;
-  private HttpFileServer fileServer2;
-  private boolean isDarkTheme = true;
+  private boolean isDarkTheme = false;
   private int currentPort;
   private Timer statsUpdateTimer;
   private NetworkVerifier.NetworkInfo currentNetwork;
-  private boolean useHttps = false;
+  private boolean useHttps = true;
 
   @FXML
   public void initialize() {
@@ -90,6 +88,10 @@ public class MainController {
     if (httpsCheck != null) {
       httpsCheck.setSelected(true);
     }
+
+    // Set default theme (change isDarkTheme to true for dark mode default)
+    isDarkTheme = false; // false = light (default), true = dark
+    updateThemeIcon();
 
     updateStatus("Ready. Select a folder to share.", "info");
 
@@ -127,7 +129,7 @@ public class MainController {
 
                       logger.info("Network validated: {}", currentNetwork);
                     } else {
-                      networkStatusLabel.setText("⚠" + result.getMessage());
+                      networkStatusLabel.setText("⚠ " + result.getMessage());
                       networkStatusLabel.getStyleClass().removeAll("network-success");
                       networkStatusLabel.getStyleClass().add("network-error");
 
@@ -172,14 +174,34 @@ public class MainController {
           "Could not verify network connection. Server will start but may not be accessible.");
     }
 
+    // Check HTTPS preference
+    useHttps = httpsCheck != null && httpsCheck.isSelected();
+    int preferredPort = useHttps ? PREFERRED_PORT_HTTPS : PREFERRED_PORT_HTTP;
+
+    // Show HTTPS certificate warning
+    if (useHttps) {
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("HTTPS Security");
+      alert.setHeaderText("Self-Signed Certificate");
+      alert.setContentText(
+          "The server will use a self-signed SSL certificate.\n\n"
+              + "Mobile browsers will show a security warning.\n"
+              + "Click 'Advanced' → 'Proceed' to continue.\n\n"
+              + "This is normal for local HTTPS servers.");
+      alert.showAndWait();
+    }
+
     try {
       // Disable buttons during startup
       startServerButton.setDisable(true);
       selectFolderButton.setDisable(true);
       autoShutdownCheck.setDisable(true);
+      if (httpsCheck != null) {
+        httpsCheck.setDisable(true);
+      }
       serverProgress.setVisible(true);
 
-      updateStatus("Starting server...", "info");
+      updateStatus("Starting " + (useHttps ? "HTTPS" : "HTTP") + " server...", "info");
 
       boolean autoShutdown = autoShutdownCheck.isSelected();
 
@@ -187,19 +209,24 @@ public class MainController {
       new Thread(
               () -> {
                 try {
-                  // Create server with optional timeout
+                  // Create server with optional timeout and HTTPS
                   int timeout = autoShutdown ? AUTO_SHUTDOWN_MINUTES : 0;
-                  // creae the a server witht that port no and folder
+
                   fileServer =
                       new HttpsFileServer(
-                          PREFERRED_PORT_HTTP, selectedFolder, timeout, null, useHttps);
+                          preferredPort,
+                          selectedFolder,
+                          timeout,
+                          this::handleAutoShutdown,
+                          useHttps);
                   fileServer.start();
 
-                  // Get actual port used  in the server
+                  // Get actual port used
                   currentPort = fileServer.getActualPort();
 
                   String localIP = NetworkUtils.getLocalIPAddress();
-                  String serverUrl = "http://" + localIP + ":" + currentPort;
+                  String protocol = useHttps ? "https" : "http";
+                  String serverUrl = protocol + "://" + localIP + ":" + currentPort;
 
                   Platform.runLater(
                       () -> {
@@ -216,18 +243,23 @@ public class MainController {
 
                           // Show port info if different from preferred
                           if (portInfoLabel != null) {
-                            // Should be using the same as the port from the server or else the
-                            // error will keep comming
-                            if (currentPort != PREFERRED_PORT_HTTP) {
-                              portInfoLabel.setText(
+                            String portMsg = "";
+                            if (currentPort != preferredPort) {
+                              portMsg =
                                   "ℹ Using port "
                                       + currentPort
                                       + " (Port "
-                                      + PREFERRED_PORT_HTTP
-                                      + " was unavailable)");
+                                      + preferredPort
+                                      + " was unavailable)";
+                            }
+                            if (useHttps) {
+                              portMsg +=
+                                  (portMsg.isEmpty() ? "" : " • ")
+                                      + "🔒 HTTPS enabled with self-signed certificate";
+                            }
+                            if (!portMsg.isEmpty()) {
+                              portInfoLabel.setText(portMsg);
                               portInfoLabel.setVisible(true);
-                            } else {
-                              portInfoLabel.setVisible(false);
                             }
                           }
 
@@ -240,10 +272,8 @@ public class MainController {
                           stopServerButton.setDisable(false);
                           serverProgress.setVisible(false);
 
-                          String statusMsg =
-                              currentPort == PREFERRED_PORT_HTTP
-                                  ? "Server running on " + serverUrl
-                                  : "Server running on " + serverUrl + " (auto-assigned port)";
+                          String securityBadge = useHttps ? "🔒 HTTPS" : "HTTP";
+                          String statusMsg = securityBadge + " server running on " + serverUrl;
 
                           if (autoShutdown) {
                             statusMsg += " • Auto-shutdown: " + AUTO_SHUTDOWN_MINUTES + " min idle";
@@ -251,7 +281,8 @@ public class MainController {
 
                           updateStatus(statusMsg, "success");
 
-                          logger.info("Server started successfully on {}", serverUrl);
+                          logger.info(
+                              "Server started successfully on {} (HTTPS: {})", serverUrl, useHttps);
 
                         } catch (Exception e) {
                           handleServerError(e);
@@ -292,6 +323,9 @@ public class MainController {
       startServerButton.setDisable(false);
       selectFolderButton.setDisable(false);
       autoShutdownCheck.setDisable(false);
+      if (httpsCheck != null) {
+        httpsCheck.setDisable(false);
+      }
 
       updateStatus("Server stopped", "info");
       logger.info("Server stopped manually");
@@ -408,13 +442,24 @@ public class MainController {
 
     if (isDarkTheme) {
       scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
-      themeToggle.setText("");
     } else {
       scene.getStylesheets().add(getClass().getResource("/css/light-theme.css").toExternalForm());
-      themeToggle.setText("🌙");
     }
 
+    updateThemeIcon();
     logger.info("Switched to {} theme", isDarkTheme ? "dark" : "light");
+  }
+
+  private void updateThemeIcon() {
+    if (themeIcon != null) {
+      if (isDarkTheme) {
+        // Dark mode active - show sun icon (click to go light)
+        themeIcon.setIconLiteral("mdi2w-white-balance-sunny");
+      } else {
+        // Light mode active - show moon icon (click to go dark)
+        themeIcon.setIconLiteral("mdi2m-moon-waning-crescent");
+      }
+    }
   }
 
   private void handleServerError(Exception e) {
@@ -471,4 +516,3 @@ public class MainController {
     }
   }
 }
-

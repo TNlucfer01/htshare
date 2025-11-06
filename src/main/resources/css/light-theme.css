@@ -153,8 +153,8 @@
 	-fx-background-color: #e2e8f0;
 	-fx-background-radius: 8;
 	-fx-cursor: hand;
-	-fx-font-size: 16px;
-	-fx-padding: 0;
+	-fx-padding: 8;
+	-fx-border-width: 0;
 }
 
 .icon-button:hover {
@@ -163,6 +163,11 @@
 
 .icon-button:pressed {
 	-fx-background-color: #a0aec0;
+}
+
+.icon-button .ikonli-font-icon {
+	-fx-icon-color: #4a5568;
+	-fx-icon-size: 16;
 }
 
 /* Checkbox */

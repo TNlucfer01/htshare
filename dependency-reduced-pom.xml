@@ -12,6 +12,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
+          <argLine>--add-exports
+						java.base/sun.security.x509=ALL-UNNAMED</argLine>
           <source>17</source>
           <target>17</target>
         </configuration>
