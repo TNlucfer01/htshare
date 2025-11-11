@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>com.htshare.HtShare</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>MIT</project_license>
+	<name>HtShare</name>
+	<summary>Fast and secure file sharing over local network</summary>
+
+	<description>
+		<p>
+			HtShare is a modern desktop application for sharing files over your local
+			network.
+			With built-in HTTPS support, QR code generation, and a beautiful interface,
+			sharing
+			files has never been easier.
+		</p>
+		<p>Features:</p>
+		<ul>
+			<li>Secure HTTPS file transfer with self-signed certificates</li>
+			<li>QR code generation for instant mobile connection</li>
+			<li>Beautiful dark and light themes</li>
+			<li>Real-time statistics and monitoring</li>
+			<li>Auto-shutdown on inactivity</li>
+			<li>Network verification and validation</li>
+			<li>Dynamic port assignment</li>
+			<li>Cross-platform support (Windows, macOS, Linux)</li>
+		</ul>
+	</description>
+
+	<launchable type="desktop-id">com.htshare.HtShare.desktop</launchable>
+
+	<screenshots>
+		<screenshot type="default">
+			<caption>Main application window with file sharing interface</caption>
+			<image>
+				https://raw.githubusercontent.com/TNLucfer01/htshare/main/screenshots/main-window.png</image>
+		</screenshot>
+		<!-- <screenshot> -->
+		<!-- 	<caption>QR code for mobile connection</caption> -->
+		<!-- 	<image> -->
+		<!--
+		https://raw.githubusercontent.com/TNLucfer01/htshare/main/screenshots/qr-code.png</image> -->
+		<!-- </screenshot> -->
+		<!-- <screenshot> -->
+		<!-- 	<caption>Dark theme interface</caption> -->
+		<!-- 	<image> -->
+		<!--
+		https://raw.githubusercontent.com/TNLucfer01/htshare/main/screenshots/dark-theme.png</image> -->
+		<!-- </screenshot> -->
+	</screenshots>
+
+	<url type="homepage">https://github.com/TNLucfer01/htshare</url>
+	<url type="bugtracker">https://github.com/TNLucfer01/htshare/issues</url>
+	<url type="help">https://github.com/TNLucfer01/htshare/wiki</url>
+	<url type="vcs-browser">https://github.com/TNLucfer01/htshare</url>
+
+	<developer id="com.htshare">
+		<name>TNLucfer01</name>
+	</developer>
+
+	<content_rating type="oars-1.1">
+		<content_attribute id="social-info">mild</content_attribute>
+	</content_rating>
+
+	<provides>
+		<binary>htshare</binary>
+	</provides>
+
+	<releases>
+		<release version="1.0.0" date="2025-11-01">
+			<description>
+				<p>Initial release</p>
+				<ul>
+					<li>HTTPS support with self-signed certificates</li>
+					<li>QR code generation for mobile devices</li>
+					<li>Dark and light theme support</li>
+					<li>Real-time connection monitoring</li>
+					<li>Network verification system</li>
+					<li>Auto-shutdown feature</li>
+				</ul>
+			</description>
+		</release>
+	</releases>
+
+	<categories>
+		<category>Network</category>
+		<category>FileTransfer</category>
+		<category>Utility</category>
+	</categories>
+
+	<keywords>
+		<keyword>file sharing</keyword>
+		<keyword>network</keyword>
+		<keyword>transfer</keyword>
+		<keyword>HTTPS</keyword>
+		<keyword>QR code</keyword>
+		<keyword>mobile</keyword>
+	</keywords>
+
+	<update_contact>your-email@example.com</update_contact>
+</component>

@@ -1,6 +1,1 @@
-[Desktop Entry]
-Name=HtShare
-Exec=htshare
-Icon=htshare
-Type=Application
-Categories=Utility;
+usr/share/applications/com.htshare.HtShare.desktop
