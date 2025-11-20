@@ -60,7 +60,7 @@ public class MainController {
   private Stage stage;
   private File selectedFolder;
   private HttpsFileServer fileServer;
-  private boolean isDarkTheme = false;
+  private boolean isDarkTheme = true;
   private int currentPort;
   private Timer statsUpdateTimer;
   private NetworkVerifier.NetworkInfo currentNetwork;
@@ -90,7 +90,7 @@ public class MainController {
     }
 
     // Set default theme (change isDarkTheme to true for dark mode default)
-    isDarkTheme = false; // false = light (default), true = dark
+    isDarkTheme = true; // false = light (default), true = dark
     updateThemeIcon();
 
     updateStatus("Ready. Select a folder to share.", "info");
@@ -197,7 +197,7 @@ public class MainController {
       selectFolderButton.setDisable(true);
       autoShutdownCheck.setDisable(true);
       if (httpsCheck != null) {
-        httpsCheck.setDisable(true);
+        httpsCheck.setDisable(false);
       }
       serverProgress.setVisible(true);
 

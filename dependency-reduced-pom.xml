@@ -23,6 +23,9 @@
         <artifactId>javafx-maven-plugin</artifactId>
         <version>0.0.8</version>
         <configuration>
+          <additionalArgs>--add-exports
+						java.base/sun.security.x509=ALL-UNNAMED --add-opens
+						java.base/sun.security.x509=ALL-UNNAMED</additionalArgs>
           <mainClass>com.htshare.MainApp</mainClass>
         </configuration>
       </plugin>

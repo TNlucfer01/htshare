@@ -1,1 +1,13 @@
-usr/share/applications/com.htshare.HtShare.desktop
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=HtShare
+GenericName=File Sharing Application
+Comment=Fast and secure file sharing over local network
+Exec=htshare %F
+Terminal=false
+Icon=htshare
+
+Categories=Network;FileTransfer;Utility;
+Keywords=file;share;transfer;network;https;
+StartupNotify=true

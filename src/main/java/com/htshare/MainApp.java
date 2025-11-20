@@ -26,7 +26,7 @@ public class MainApp extends Application {
       Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
       // Load default theme (light)
-      scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+      scene.getStylesheets().add(getClass().getResource("/css/light-theme.css").toExternalForm());
 
       primaryStage.setTitle("HtShare - Desktop");
       primaryStage.setScene(scene);
@@ -39,6 +39,8 @@ public class MainApp extends Application {
           event -> {
             controller.cleanup();
             logger.info("Application closed");
+            javafx.application.Platform.exit();
+            System.exit(0);
           });
 
     } catch (Exception e) {
